@@ -1,9 +1,7 @@
-ARG DEBIAN_DIST=bookworm
-FROM debian:$DEBIAN_DIST
+FROM debian:bookworm
 
 ARG ZLS_VERSION
 ARG ZIG_VERSION
-ARG DEBIAN_DIST
 ARG BUILD_VERSION
 ARG FULL_VERSION
 ARG DEB_ARCH=amd64
@@ -43,17 +41,11 @@ RUN sed -i "s/ZLS_VERSION/$ZLS_VERSION/" /output/DEBIAN/prerm
 RUN sed -i "s/BUILD_VERSION/$BUILD_VERSION/" /output/DEBIAN/postrm
 RUN sed -i "s/ZLS_VERSION/$ZLS_VERSION/" /output/DEBIAN/postrm
 
-RUN sed -i "s/DIST/$DEBIAN_DIST/g" /output/usr/share/doc/zls-0/changelog.Debian
-RUN sed -i "s/DIST/$DEBIAN_DIST/" /output/DEBIAN/control
-RUN sed -i "s/DIST/$DEBIAN_DIST/" /output/DEBIAN/postinst
-RUN sed -i "s/DIST/$DEBIAN_DIST/" /output/DEBIAN/prerm
-RUN sed -i "s/DIST/$DEBIAN_DIST/" /output/DEBIAN/prerm
-RUN sed -i "s/DIST/$DEBIAN_DIST/" /output/DEBIAN/postrm
 
 
 RUN gzip -9n /output/usr/share/doc/zls-0/changelog.Debian
 RUN find /output/usr -type f ! -path '*/lib/zls/*' -exec chmod 644 {} +
 
-RUN dpkg-deb --build /output /zls-zero_${FULL_VERSION}.deb
+RUN dpkg-deb -Zxz --build /output /zls-zero_${FULL_VERSION}.deb
 
 

@@ -1,4 +1,4 @@
-zls (ZLS_VERSION-BUILD_VERSION~DIST) DIST; urgency=low
+zls (ZLS_VERSION-BUILD_VERSION~griffo) stable; urgency=low
 
   * New upstream release ZLS_VERSION.
 

@@ -30,8 +30,6 @@ get_zls_arch() {
     esac
 }
 
-declare -a DISTS=("bookworm" "trixie" "forky" "sid")
-
 build_architecture() {
     local build_arch=$1
     local zls_arch
@@ -64,35 +62,35 @@ build_architecture() {
         return 1
     fi
 
-    for dist in "${DISTS[@]}"; do
-        FULL_VERSION="$ZLS_VERSION-${BUILD_VERSION}~${dist}_${build_arch}"
-        echo "  Building $FULL_VERSION"
+    # One zls and one zls-0 per architecture for every suite: upstream ships a
+    # static binary, so only the old ~<suite> version suffix ever differed. The
+    # fixed ~griffo keeps them below the distro's own build of the version.
+    FULL_VERSION="$ZLS_VERSION-${BUILD_VERSION}~griffo_${build_arch}"
+    echo "  Building $FULL_VERSION"
 
-        for spec in "zls:meta_Dockerfile" "zls-zero:zero_Dockerfile"; do
-            pkg="${spec%%:*}"
-            dockerfile="${spec##*:}"
+    for spec in "zls:meta_Dockerfile" "zls-zero:zero_Dockerfile"; do
+        pkg="${spec%%:*}"
+        dockerfile="${spec##*:}"
 
-            if ! docker build . -f "$dockerfile" -t "$pkg-$dist-$build_arch" \
-                --build-arg ZLS_VERSION="$ZLS_VERSION" \
-                --build-arg ZIG_VERSION="$ZIG_VERSION" \
-                --build-arg DEBIAN_DIST="$dist" \
-                --build-arg BUILD_VERSION="$BUILD_VERSION" \
-                --build-arg FULL_VERSION="$FULL_VERSION" \
-                --build-arg DEB_ARCH="$build_arch"; then
-                echo "❌ Failed to build $pkg image for $dist on $build_arch"
-                return 1
-            fi
+        if ! docker build . -f "$dockerfile" -t "$pkg-$build_arch" \
+            --build-arg ZLS_VERSION="$ZLS_VERSION" \
+            --build-arg ZIG_VERSION="$ZIG_VERSION" \
+            --build-arg BUILD_VERSION="$BUILD_VERSION" \
+            --build-arg FULL_VERSION="$FULL_VERSION" \
+            --build-arg DEB_ARCH="$build_arch"; then
+            echo "❌ Failed to build $pkg image for $build_arch"
+            return 1
+        fi
 
-            id="$(docker create "$pkg-$dist-$build_arch")"
-            if ! docker cp "$id:/${pkg}_${FULL_VERSION}.deb" - > "./${pkg}_${FULL_VERSION}.deb"; then
-                echo "❌ Failed to extract $pkg .deb for $dist on $build_arch"
-                return 1
-            fi
-            if ! tar -xf "./${pkg}_${FULL_VERSION}.deb"; then
-                echo "❌ Failed to extract $pkg .deb contents for $dist on $build_arch"
-                return 1
-            fi
-        done
+        id="$(docker create "$pkg-$build_arch")"
+        if ! docker cp "$id:/${pkg}_${FULL_VERSION}.deb" - > "./${pkg}_${FULL_VERSION}.deb"; then
+            echo "❌ Failed to extract $pkg .deb for $build_arch"
+            return 1
+        fi
+        if ! tar -xf "./${pkg}_${FULL_VERSION}.deb"; then
+            echo "❌ Failed to extract $pkg .deb contents for $build_arch"
+            return 1
+        fi
     done
 
     rm -rf "dist/$build_arch" || true
