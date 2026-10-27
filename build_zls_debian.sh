@@ -64,8 +64,8 @@ build_architecture() {
 
     # One zls and one zls-0 per architecture for every suite: upstream ships a
     # static binary, so only the old ~<suite> version suffix ever differed. The
-    # fixed ~griffo keeps them below the distro's own build of the version.
-    FULL_VERSION="$ZLS_VERSION-${BUILD_VERSION}~griffo_${build_arch}"
+    # fixed ~gaofn keeps them below the distro's own build of the version.
+    FULL_VERSION="$ZLS_VERSION-${BUILD_VERSION}~gaofn_${build_arch}"
     echo "  Building $FULL_VERSION"
 
     for spec in "zls:meta_Dockerfile" "zls-zero:zero_Dockerfile"; do

@@ -1,9 +1,9 @@
 Section: devel
 Priority: optional
-Maintainer: Dario Griffo <dariogriffo@gmail.com>
+Maintainer: Fengnan Gao <gao.fengnan@gmail.com>
 Homepage: https://zigtools.org/zls/install/
 Package: zls-0
-Version: ZLS_VERSION-BUILD_VERSION~griffo
+Version: ZLS_VERSION-BUILD_VERSION~gaofn
 Architecture: DEB_ARCH
 Recommends: zig-0 (>= ZIG_VERSION)
 Description: Language server for the Zig programming language (0.x series)

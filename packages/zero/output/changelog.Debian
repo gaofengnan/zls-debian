@@ -1,8 +1,8 @@
-zls (ZLS_VERSION-BUILD_VERSION~griffo) stable; urgency=low
+zls (ZLS_VERSION-BUILD_VERSION~gaofn) stable; urgency=low
 
   * New upstream release ZLS_VERSION.
 
   zls publishes its release notes with each tag; the changelog for this and
   every other version lives at https://github.com/zigtools/zls/releases
 
- -- Dario Griffo <dariogriffo@gmail.com>  Fri, 21 Aug 2026 00:00:00 +0000
+ -- Fengnan Gao <gao.fengnan@gmail.com>  Fri, 21 Aug 2026 00:00:00 +0000
